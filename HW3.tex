@@ -1,0 +1,56 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\begin{document}
+
+% 统一定义：N_{t-1}(i) 表示在第 t 步之前臂 i 被选择的次数，
+%               N_t(i)=N_{t-1}(i)+\mathbf{1}\{a_t=i\}。
+
+\bigskip
+\noindent\textbf{(1) Epsilon‐Greedy}
+\[
+a_t =
+\begin{cases}
+\displaystyle \arg\max_{i} Q_{t-1}(i), & \text{with probability }1-\varepsilon,\\[6pt]
+\text{a random arm in }\{1,\dots,K\}, & \text{with probability }\varepsilon,
+\end{cases}
+\]
+\[
+N_t(a_t)=N_{t-1}(a_t)+1,\quad
+Q_t(a_t) = Q_{t-1}(a_t)\;+\;\frac{1}{N_t(a_t)}\bigl(r_t - Q_{t-1}(a_t)\bigr).
+\]
+
+\bigskip
+\noindent\textbf{(2) UCB (Upper Confidence Bound)}
+\[
+a_t = \arg\max_{i}\Bigl[\,Q_{t-1}(i)\;+\;c\,\sqrt{\frac{\ln t}{N_{t-1}(i)}}\Bigr],
+\]
+\[
+N_t(a_t)=N_{t-1}(a_t)+1,\quad
+Q_t(a_t) = Q_{t-1}(a_t)\;+\;\frac{1}{N_t(a_t)}\bigl(r_t - Q_{t-1}(a_t)\bigr).
+\]
+
+\bigskip
+\noindent\textbf{(3) Softmax Action Selection}
+\[
+P_t(i) = \frac{\exp\bigl(Q_{t-1}(i)/\tau\bigr)}
+{\sum_{j=1}^K \exp\bigl(Q_{t-1}(j)/\tau\bigr)}, 
+\quad a_t\sim P_t(\cdot),
+\]
+\[
+N_t(a_t)=N_{t-1}(a_t)+1,\quad
+Q_t(a_t) = Q_{t-1}(a_t)\;+\;\frac{1}{N_t(a_t)}\bigl(r_t - Q_{t-1}(a_t)\bigr).
+\]
+
+\bigskip
+\noindent\textbf{(4) Thompson Sampling}
+\[
+\theta_i \sim \mathrm{Beta}\bigl(\alpha_{i},\beta_{i}\bigr),\quad
+a_t = \arg\max_{i}\theta_i,
+\]
+\[
+\alpha_{a_t} \leftarrow \alpha_{a_t} + r_t,\quad
+\beta_{a_t} \leftarrow \beta_{a_t} + (1 - r_t).
+\]
+(假设 \(r_t\in\{0,1\}\)，即 Bernoulli 回报情形。)
+
+\end{document}
